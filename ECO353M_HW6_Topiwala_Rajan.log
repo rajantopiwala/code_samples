@@ -1,0 +1,141 @@
+---------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  \\cnsdisk.austin.utexas.edu\home\rrt687\Documents\ECO353M\ECO353M_HW6_Topiwala_Rajan.log
+  log type:  text
+ opened on:   8 Nov 2023, 11:07:20
+
+. do "\\cnsdisk.austin.utexas.edu\home\rrt687\Documents\ECO353M\ECO353M_HW6_Topiwala_Rajan.do"
+
+. //Part I
+. 
+. //enter the data
+. clear
+
+. 
+. input year district banks
+
+          year   district      banks
+  1. 1929 8 169
+  2. 1930 8 165
+  3. 1931 8 132
+  4. 1932 8 120
+  5. 1933 8 111
+  6. 1934 8 108
+  7. 1929 6 141
+  8. 1930 6 135
+  9. 1931 6 121
+ 10. 1932 6 113
+ 11. 1933 6 102
+ 12. 1934 6 102
+ 13. end
+
+. 
+. //create treatment and post dummies
+. gen treatment = (district == 6)
+
+. gen post = (year >= 1931)
+
+. 
+. 
+. //run diff in diff
+. regress banks i.treatment i.post i.treatment#i.post
+
+      Source |       SS           df       MS      Number of obs   =        12
+-------------+----------------------------------   F(3, 8)         =     21.14
+       Model |  5007.16667         3  1669.05556   Prob > F        =    0.0004
+    Residual |      631.75         8    78.96875   R-squared       =    0.8880
+-------------+----------------------------------   Adj R-squared   =    0.8460
+       Total |  5638.91667        11  512.628788   Root MSE        =    8.8864
+
+--------------------------------------------------------------------------------
+         banks |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+   1.treatment |        -29   8.886436    -3.26   0.011    -49.49216   -8.507841
+        1.post |     -49.25    7.69588    -6.40   0.000    -66.99673   -31.50327
+               |
+treatment#post |
+          1 1  |      20.75   10.88362     1.91   0.093    -4.347666    45.84767
+               |
+         _cons |        167   6.283659    26.58   0.000     152.5099    181.4901
+--------------------------------------------------------------------------------
+
+. 
+. 
+. //Part II
+. replace banks = banks + 6 if district == 8
+(6 real changes made)
+
+. 
+. //run diff in diff 
+. regress banks i.treatment i.post i.treatment#i.post
+
+      Source |       SS           df       MS      Number of obs   =        12
+-------------+----------------------------------   F(3, 8)         =     23.90
+       Model |  5661.16667         3  1887.05556   Prob > F        =    0.0002
+    Residual |      631.75         8    78.96875   R-squared       =    0.8996
+-------------+----------------------------------   Adj R-squared   =    0.8620
+       Total |  6292.91667        11  572.083333   Root MSE        =    8.8864
+
+--------------------------------------------------------------------------------
+         banks |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+   1.treatment |        -35   8.886436    -3.94   0.004    -55.49216   -14.50784
+        1.post |     -49.25    7.69588    -6.40   0.000    -66.99673   -31.50327
+               |
+treatment#post |
+          1 1  |      20.75   10.88362     1.91   0.093    -4.347666    45.84767
+               |
+         _cons |        173   6.283659    27.53   0.000     158.5099    187.4901
+--------------------------------------------------------------------------------
+
+. 
+. 
+. //Q5
+. //enter the data again
+. clear
+
+. 
+. input year district banks
+
+          year   district      banks
+  1. 1929 8 169
+  2. 1930 8 165
+  3. 1931 8 132
+  4. 1932 8 120
+  5. 1933 8 111
+  6. 1934 8 108
+  7. 1929 6 141
+  8. 1930 6 135
+  9. 1931 6 121
+ 10. 1932 6 113
+ 11. 1933 6 102
+ 12. 1934 6 102
+ 13. end
+
+. 
+. //create separate variables for to make the graph 
+. gen banks6 = banks if district == 6
+(6 missing values generated)
+
+. gen banks8 = banks if district == 8
+(6 missing values generated)
+
+. 
+. //replace the first value for 8th district banks to 180
+. replace banks8 = 180 in 1
+(1 real change made)
+
+. 
+. //make the line plot
+. line banks6 banks8 year, legend(subtitle("Banks by District") order(1 "6th District" 2 "8th District"))
+
+. 
+. 
+end of do-file
+
+. log close
+      name:  <unnamed>
+       log:  \\cnsdisk.austin.utexas.edu\home\rrt687\Documents\ECO353M\ECO353M_HW6_Topiwala_Rajan.log
+  log type:  text
+ closed on:   8 Nov 2023, 11:07:35
+---------------------------------------------------------------------------------------------------------------------------------------
